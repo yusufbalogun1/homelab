@@ -14,8 +14,8 @@ A small, fully automated platform lab built step by step and rebuildable from co
 | Phase | Focus | Status |
 |---|---|---|
 | 0 | Foundations: VM, SSH, networking, firewall, storage | Done |
-| 1 | Ansible automation | Next |
-| 2 | k3s cluster | Planned |
+| 1 | Ansible automation | Done |
+| 2 | k3s cluster | Next |
 | 3 | Demo services behind Kong | Planned |
 | 4 | Prometheus and Grafana | Planned |
 | 5 | Azure extension | Planned |
@@ -23,3 +23,4 @@ A small, fully automated platform lab built step by step and rebuildable from co
 ## Docs
 
 - [Phase 0: Foundations](docs/phase-0-foundations.md)
+- [Phase 1: Automation](docs/phase-1-automation.md)
