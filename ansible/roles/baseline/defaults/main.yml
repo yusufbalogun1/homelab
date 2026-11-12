@@ -1,0 +1,8 @@
+baseline_timezone: Africa/Lagos
+baseline_packages:
+  - vim-enhanced
+  - git
+  - curl
+  - tar
+  - bash-completion
+  - chrony
