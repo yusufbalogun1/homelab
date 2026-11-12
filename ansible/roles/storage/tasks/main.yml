@@ -1,0 +1,29 @@
+- name: Install LVM tools
+  ansible.builtin.dnf:
+    name: lvm2
+    state: present
+
+- name: Volume group
+  community.general.lvg:
+    vg: "{{ storage_vg }}"
+    pvs: "{{ storage_disk }}"
+
+- name: Logical volume
+  community.general.lvol:
+    vg: "{{ storage_vg }}"
+    lv: "{{ storage_lv }}"
+    size: "{{ storage_size }}"
+    resizefs: true
+
+- name: Filesystem
+  community.general.filesystem:
+    fstype: "{{ storage_fstype }}"
+    dev: "/dev/{{ storage_vg }}/{{ storage_lv }}"
+
+- name: Mount and persist in fstab
+  ansible.posix.mount:
+    path: "{{ storage_mount }}"
+    src: "/dev/{{ storage_vg }}/{{ storage_lv }}"
+    fstype: "{{ storage_fstype }}"
+    opts: defaults
+    state: mounted

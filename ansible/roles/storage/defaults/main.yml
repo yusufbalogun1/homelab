@@ -1,0 +1,6 @@
+storage_disk: /dev/vdb
+storage_vg: vg_data
+storage_lv: lv_data
+storage_size: 1524m
+storage_mount: /data
+storage_fstype: xfs

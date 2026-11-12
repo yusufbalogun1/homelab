@@ -4,3 +4,4 @@
   roles:
     - baseline
     - hardening
+    - storage
