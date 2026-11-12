@@ -1,0 +1,33 @@
+- name: SSH hardening drop-in
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/10-hardening.conf
+    content: |
+      PasswordAuthentication no
+      PermitRootLogin no
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart sshd
+
+- name: Validate SSH config
+  ansible.builtin.command: sshd -t
+  changed_when: false
+
+- name: Firewall allows SSH
+  ansible.posix.firewalld:
+    service: ssh
+    state: enabled
+    permanent: true
+    immediate: true
+
+- name: Firewall blocks Cockpit
+  ansible.posix.firewalld:
+    service: cockpit
+    state: disabled
+    permanent: true
+    immediate: true
+
+- name: SELinux enforcing
+  ansible.posix.selinux:
+    policy: targeted
+    state: enforcing

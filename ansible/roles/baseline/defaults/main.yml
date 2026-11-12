@@ -6,3 +6,4 @@ baseline_packages:
   - tar
   - bash-completion
   - chrony
+  - python3-libselinux
