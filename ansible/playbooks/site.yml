@@ -1,7 +1,12 @@
-- name: Configure lab hosts
-  hosts: lab
+- name: Base configuration
+  hosts: all
   become: true
   roles:
     - baseline
     - hardening
+
+- name: Lab storage
+  hosts: lab
+  become: true
+  roles:
     - storage
