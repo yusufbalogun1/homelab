@@ -1,0 +1,43 @@
+- name: Trust node, pod and service networks in firewalld
+  ansible.posix.firewalld:
+    zone: trusted
+    source: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - 10.0.0.0/16
+    - 10.42.0.0/16
+    - 10.43.0.0/16
+
+- name: Download k3s install script
+  ansible.builtin.get_url:
+    url: https://get.k3s.io
+    dest: /usr/local/bin/k3s-install.sh
+    mode: "0755"
+
+- name: Install k3s server
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s-install.sh
+    creates: /usr/local/bin/k3s
+  environment:
+    INSTALL_K3S_CHANNEL: stable
+    INSTALL_K3S_EXEC: "server --node-ip {{ ansible_facts['default_ipv4']['address'] }} --write-kubeconfig-mode 0644"
+  when: inventory_hostname in groups['k3s_server']
+
+- name: Read join token from server
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: k3s_token_raw
+  when: inventory_hostname in groups['k3s_server']
+
+- name: Install k3s agent
+  ansible.builtin.command:
+    cmd: /usr/local/bin/k3s-install.sh
+    creates: /usr/local/bin/k3s
+  environment:
+    INSTALL_K3S_CHANNEL: stable
+    K3S_URL: "https://{{ hostvars[groups['k3s_server'][0]]['ansible_facts']['default_ipv4']['address'] }}:6443"
+    K3S_TOKEN: "{{ hostvars[groups['k3s_server'][0]].k3s_token_raw.content | b64decode | trim }}"
+    INSTALL_K3S_EXEC: "agent --node-ip {{ ansible_facts['default_ipv4']['address'] }}"
+  when: inventory_hostname in groups['k3s_agents']
